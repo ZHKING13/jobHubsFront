@@ -1,31 +1,44 @@
+import ActivityDetailModal from "../components/Activitydetail";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import AddActivityModal from "../components/AddActivityForm";
-
 export default function UserProfil() {
     const { id } = useParams();
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-const [showModal, setShowModal] = useState(false);
-async function fetchUser() {
-    try {
-        const res = await fetch(
-            `http://jobhubs.212.56.40.133.sslip.io/users/${id}`
-        );
-        if (!res.ok)
-            throw new Error("Erreur lors du chargement du profil");
-        const data = await res.json();
-        setUser(data);
-    } catch (err) {
-        setError(err.message || "Erreur inconnue");
-    } finally {
-        setLoading(false);
+    const [showModal, setShowModal] = useState(false);
+    const [selectedActivity, setSelectedActivity] = useState(null);
+    const [showActivityDetail, setShowActivityDetail] = useState(false);
+
+    async function fetchUser() {
+        try {
+            const res = await fetch(
+                `http://jobhubs.212.56.40.133.sslip.io/users/${id}`
+            );
+            if (!res.ok) throw new Error("Erreur lors du chargement du profil");
+            const data = await res.json();
+            setUser(data);
+        } catch (err) {
+            setError(err.message || "Erreur inconnue");
+        } finally {
+            setLoading(false);
+        }
     }
-}
+
     useEffect(() => {
         fetchUser();
     }, [id]);
+
+    const handleActivityClick = (activity) => {
+        setSelectedActivity(activity);
+        setShowActivityDetail(true);
+    };
+
+    const closeActivityDetail = () => {
+        setShowActivityDetail(false);
+        setSelectedActivity(null);
+    };
 
     if (loading) return <div className="p-6 text-center">Chargement...</div>;
     if (error)
@@ -36,7 +49,7 @@ async function fetchUser() {
     return (
         <div className="p-6 max-w-6xl mx-auto space-y-8">
             {/* Infos utilisateur */}
-            <section className="bg-white rounded shadow p-6 flex items-center gap-6">
+            <section className="bg-white rounded-xl shadow-lg p-6 flex items-center gap-6">
                 <img
                     src={user.pays?.flag}
                     alt={user.pays?.nom}
@@ -63,84 +76,146 @@ async function fetchUser() {
 
             {/* Activités */}
             <section>
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-semibold">
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-2xl font-bold text-gray-900">
                         Activités ({user.Activite?.length || 0})
                     </h2>
                     <button
-                        onClick={() =>
-                            setShowModal(true)
-                        }
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+                        onClick={() => setShowModal(true)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg shadow-lg transition-colors flex items-center gap-2"
                     >
-                        + Ajouter une activité
+                        <span className="text-xl">+</span>
+                        Ajouter une activité
                     </button>
                 </div>
 
                 {(!user.Activite || user.Activite.length === 0) && (
-                    <p className="text-gray-500">
-                        Aucune activité pour cet utilisateur.
-                    </p>
+                    <div className="text-center py-12">
+                        <div className="text-6xl mb-4">📋</div>
+                        <p className="text-gray-500 text-lg">
+                            Aucune activité pour cet utilisateur.
+                        </p>
+                    </div>
                 )}
 
                 <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                     {user.Activite?.map((act) => (
                         <div
                             key={act.id}
-                            className="bg-white rounded shadow p-4 flex flex-col justify-between"
+                            onClick={() => handleActivityClick(act)}
+                            className="bg-white rounded-xl shadow-lg p-6 cursor-pointer transform transition-all duration-200 hover:scale-105 hover:shadow-xl border border-gray-100"
                         >
-                            <div>
-                                <h3 className="text-lg font-semibold mb-1">
-                                    {act.fonction}
-                                </h3>
-                                <span className="inline-block bg-gray-200 text-gray-800 text-xs px-2 py-1 rounded mb-2">
-                                    {act.categorie?.nom}
-                                </span>
-                                <p>
-                                    <strong>Entreprise :</strong> {act.marque}
-                                </p>
-                                <p>
-                                    <strong>Région :</strong> {act.region}
-                                </p>
-                                <p>
-                                    <strong>Tarif :</strong> {act.tarif}
-                                </p>
-                                <p>
-                                    <strong>Disponibilité :</strong>{" "}
-                                    {act.disponibilite}
-                                </p>
-                                <p>
-                                    <strong>Téléphone :</strong> {act.telephone}
-                                </p>
-                                {act.expertise && act.expertise.length > 0 && (
-                                    <div className="mt-2 flex flex-wrap gap-1">
-                                        {act.expertise.map((exp) => (
-                                            <span
-                                                key={exp.id}
-                                                className="bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded"
-                                            >
-                                                {exp.nom}
-                                            </span>
-                                        ))}
+                            {/* Header de la carte */}
+                            <div className="flex items-start justify-between mb-4">
+                                <div className="flex items-center gap-3">
+                                    {act.logo && (
+                                        <img
+                                            src={act.logo}
+                                            alt={act.marque}
+                                            className="w-12 h-12 object-cover rounded-lg border"
+                                        />
+                                    )}
+                                    <div>
+                                        <h3 className="text-lg font-bold text-gray-900 mb-1">
+                                            {act.fonction}
+                                        </h3>
+                                        <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
+                                            {act.categorie?.nom}
+                                        </span>
                                     </div>
-                                )}
+                                </div>
                             </div>
-                            {act.siteWeb && (
-                                <a
-                                    href={act.siteWeb}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="mt-4 inline-block text-blue-600 hover:underline"
-                                >
-                                    Visiter le site
-                                </a>
+
+                            {/* Infos principales */}
+                            <div className="space-y-2 mb-4">
+                                <div className="flex items-center gap-2">
+                                    <span className="text-gray-500 text-sm">
+                                        🏢
+                                    </span>
+                                    <span className="text-gray-900 font-medium">
+                                        {act.marque}
+                                    </span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-gray-500 text-sm">
+                                        📍
+                                    </span>
+                                    <span className="text-gray-700">
+                                        {act.region}
+                                    </span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-gray-500 text-sm">
+                                        💰
+                                    </span>
+                                    <span className="text-gray-700">
+                                        {act.tarif}
+                                    </span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-gray-500 text-sm">
+                                        📞
+                                    </span>
+                                    <span className="text-gray-700">
+                                        {act.telephone}
+                                    </span>
+                                </div>
+                            </div>
+
+                            {/* Expertises (aperçu) */}
+                            {act.expertise && act.expertise.length > 0 && (
+                                <div className="mb-4">
+                                    <div className="flex flex-wrap gap-1">
+                                        {act.expertise
+                                            .slice(0, 2)
+                                            .map((exp) => (
+                                                <span
+                                                    key={exp.id}
+                                                    className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full"
+                                                >
+                                                    {exp.nom}
+                                                </span>
+                                            ))}
+                                        {act.expertise.length > 2 && (
+                                            <span className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">
+                                                +{act.expertise.length - 2}{" "}
+                                                autres
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
                             )}
+
+                            {/* Footer avec indicateur de clic */}
+                            <div className="pt-4 border-t border-gray-100 flex items-center justify-between">
+                                <span className="text-xs text-gray-500">
+                                    Cliquer pour plus de détails
+                                </span>
+                                <span className="text-blue-600 text-sm">→</span>
+                            </div>
                         </div>
                     ))}
                 </div>
             </section>
+
+            {/* Modal d'ajout d'activité */}
             {showModal && (
-                <AddActivityModal userId={id} onClose={() => setShowModal(false)} onSuccess={() => fetchUser()} />
+                <AddActivityModal
+                    userId={id}
+                    onClose={() => setShowModal(false)}
+                    onSuccess={() => {
+                        fetchUser();
+                        setShowModal(false);
+                    }}
+                />
+            )}
+
+            {/* Modal de détails d'activité */}
+            {showActivityDetail && (
+                <ActivityDetailModal
+                    activity={selectedActivity}
+                    onClose={closeActivityDetail}
+                />
             )}
         </div>
     );

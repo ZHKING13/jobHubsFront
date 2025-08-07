@@ -19,6 +19,7 @@ const user = {
 
 const navigation = [
     { name: "Utilisateurs", href: "/users" },
+    { name: "Activites", href: "/activites" },
     { name: "Catégorie", href: "/categorie" },
     { name: "Pays", href: "/pays" },
 ];
