@@ -13,7 +13,7 @@ const CategoriePage = () => {
     const fetchCategories = async () => {
         try {
             const res = await fetch(
-                "http://jobhubs.212.56.40.133.sslip.io/categorie"
+                "https://api-msa.mydigifinance.com/categorie"
             );
             if (!res.ok)
                 throw new Error("Erreur lors du chargement des catégories");

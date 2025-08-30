@@ -9,7 +9,7 @@ function ActivitePage() {
     const fetchActivites = async () => {
         try {
             const res = await fetch(
-                "http://jobhubs.212.56.40.133.sslip.io/activites"
+                "https://api-msa.mydigifinance.com/activites"
             );
             if (!res.ok)
                 throw new Error("Erreur lors du chargement des catégories");

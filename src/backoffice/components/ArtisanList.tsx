@@ -88,7 +88,7 @@ const ArtisanList = () => {
 
     useEffect(() => {
         setLoading(true);
-        fetch("http://jobhubs.212.56.40.133.sslip.io/professionnels")
+        fetch("https://api-msa.mydigifinance.com/professionnels")
             .then((res) => {
                 if (!res.ok) throw new Error("Erreur lors du chargement");
                 return res.json();
@@ -123,7 +123,7 @@ const ArtisanList = () => {
         if (window.confirm("Supprimer cet artisan ?")) {
             try {
                 const res = await fetch(
-                    `http://jobhubs.212.56.40.133.sslip.io/professionnels/${id}`,
+                    `https://api-msa.mydigifinance.com/professionnels/${id}`,
                     { method: "DELETE" }
                 );
                 if (!res.ok) throw new Error("Erreur lors de la suppression");
@@ -200,7 +200,7 @@ const ArtisanList = () => {
             let res, updatedArtisan;
             if (editMode && form.id) {
                 res = await fetch(
-                    `http://jobhubs.212.56.40.133.sslip.io/professionnels/${form.id}`,
+                    `https://api-msa.mydigifinance.com/professionnels/${form.id}`,
                     {
                         method: "PATCH",
                         headers: { "Content-Type": "application/json" },
@@ -216,7 +216,7 @@ const ArtisanList = () => {
                 );
             } else {
                 res = await fetch(
-                    "http://jobhubs.212.56.40.133.sslip.io/professionnels",
+                    "https://api-msa.mydigifinance.com/professionnels",
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },

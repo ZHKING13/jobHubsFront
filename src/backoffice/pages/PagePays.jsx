@@ -13,9 +13,7 @@ const PagePays = () => {
     const [showModal, setShowModal] = useState(false);
     const fetchPays = async () => {
         try {
-            const res = await fetch(
-                "http://jobhubs.212.56.40.133.sslip.io/pays"
-            );
+            const res = await fetch("https://api-msa.mydigifinance.com/pays");
             if (!res.ok)
                 throw new Error("Erreur lors du chargement des catégories");
             const data = await res.json();

@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import ImageUploader from "./ImageUpload";
 
@@ -12,7 +11,7 @@ export default function ActivityDetailModal({ activity, onClose, onUpdate }) {
     const [addingPhoto, setAddingPhoto] = useState(false);
     const [showPhotoForm, setShowPhotoForm] = useState(false);
     const [photos, setPhotos] = useState(activity?.Photo || []);
-const [imageUrls, setImageUrls] = useState([]);
+    const [imageUrls, setImageUrls] = useState([]);
     if (!activity) return null;
 
     const addPhoto = async () => {
@@ -22,7 +21,7 @@ const [imageUrls, setImageUrls] = useState([]);
 
         try {
             const response = await fetch(
-                `http://jobhubs.212.56.40.133.sslip.io/users/${activity.userId}/activities/${activity.id}/photos`,
+                `https://api-msa.mydigifinance.com/users/${activity.userId}/activities/${activity.id}/photos`,
                 {
                     method: "POST",
                     headers: {
@@ -50,10 +49,10 @@ const [imageUrls, setImageUrls] = useState([]);
             window.location.reload(); // Recharger la page pour afficher les nouvelles photos
         }
     };
- const handleImagesChange = (urls) => {
-     console.log("URLs des images:", urls);
-     setImageUrls(urls);
- };
+    const handleImagesChange = (urls) => {
+        console.log("URLs des images:", urls);
+        setImageUrls(urls);
+    };
     const handlePhotoKeyPress = (e) => {
         if (e.key === "Enter") {
             addPhoto();
@@ -66,7 +65,7 @@ const [imageUrls, setImageUrls] = useState([]);
         setAddingExpertise(true);
         try {
             const response = await fetch(
-                `http://jobhubs.212.56.40.133.sslip.io/users/${activity.userId}/activities/expertise`,
+                `https://api-msa.mydigifinance.com/users/${activity.userId}/activities/expertise`,
                 {
                     method: "POST",
                     headers: {
@@ -94,7 +93,7 @@ const [imageUrls, setImageUrls] = useState([]);
             alert("Erreur lors de l'ajout de l'expertise");
         } finally {
             setAddingExpertise(false);
-            window.location.reload(); 
+            window.location.reload();
         }
     };
 
@@ -270,7 +269,6 @@ const [imageUrls, setImageUrls] = useState([]);
                                                 window.open(photo.url, "_blank")
                                             }
                                         />
-                                        
                                     </div>
                                 ))}
                             </div>
@@ -288,7 +286,7 @@ const [imageUrls, setImageUrls] = useState([]);
                                 </label>
                                 <div className="flex item-center justify-center flex-col gap-2">
                                     <ImageUploader
-                                        maxImages={4-photos.length}
+                                        maxImages={4 - photos.length}
                                         onImagesChange={handleImagesChange}
                                         className="border border-gray-200 rounded-lg p-4"
                                     />

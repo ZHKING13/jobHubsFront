@@ -14,7 +14,7 @@ export default function UserProfil() {
     async function fetchUser() {
         try {
             const res = await fetch(
-                `http://jobhubs.212.56.40.133.sslip.io/users/${id}`
+                `https://api-msa.mydigifinance.com/users/${id}`
             );
             if (!res.ok) throw new Error("Erreur lors du chargement du profil");
             const data = await res.json();

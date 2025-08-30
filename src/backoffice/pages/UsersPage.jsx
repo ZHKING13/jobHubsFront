@@ -9,9 +9,7 @@ const UsersPage = () => {
     const [showModal, setShowModal] = useState(false);
     const fetchUsers = async () => {
         try {
-            const res = await fetch(
-                "http://jobhubs.212.56.40.133.sslip.io/users"
-            );
+            const res = await fetch("https://api-msa.mydigifinance.com/users");
             if (!res.ok)
                 throw new Error("Erreur lors du chargement des utilisateurs");
             const data = await res.json();

@@ -41,7 +41,7 @@ function CategorieList({ categorie, onCategorieUpdate, onCategorieDelete }) {
 
         try {
             const response = await fetch(
-                `http://jobhubs.212.56.40.133.sslip.io/categorie/${selectedCategorie.id}`,
+                `https://api-msa.mydigifinance.com/categorie/${selectedCategorie.id}`,
                 {
                     method: "PATCH",
                     headers: {
@@ -62,7 +62,7 @@ function CategorieList({ categorie, onCategorieUpdate, onCategorieDelete }) {
 
             const updatedCategorie = await response.json();
 
-           window.location.reload(); // Recharger la page pour mettre à jour la liste
+            window.location.reload(); // Recharger la page pour mettre à jour la liste
 
             closeModals();
         } catch (err) {
@@ -75,14 +75,12 @@ function CategorieList({ categorie, onCategorieUpdate, onCategorieDelete }) {
         }
     };
     const handleDelete = async () => {
-       
-
         setIsLoading(true);
         setError("");
 
         try {
             const response = await fetch(
-                `http://jobhubs.212.56.40.133.sslip.io/categorie/${selectedCategorie.id}`,
+                `https://api-msa.mydigifinance.com/categorie/${selectedCategorie.id}`,
                 {
                     method: "DELETE",
                     headers: {
@@ -101,7 +99,7 @@ function CategorieList({ categorie, onCategorieUpdate, onCategorieDelete }) {
                 );
             }
 
-         window.location.reload(); // Recharger la page pour mettre à jour la liste
+            window.location.reload(); // Recharger la page pour mettre à jour la liste
 
             closeModals();
         } catch (err) {

@@ -51,12 +51,12 @@ export default function AddActivityModal({ userId, onClose, onSuccess }) {
         const fetchData = async () => {
             try {
                 const [paysRes, categorieRes] = await Promise.all([
-                    fetch("http://jobhubs.212.56.40.133.sslip.io/pays").then(
+                    fetch("https://api-msa.mydigifinance.com/pays").then((r) =>
+                        r.json()
+                    ),
+                    fetch("https://api-msa.mydigifinance.com/categorie").then(
                         (r) => r.json()
                     ),
-                    fetch(
-                        "http://jobhubs.212.56.40.133.sslip.io/categorie"
-                    ).then((r) => r.json()),
                 ]);
                 setPaysOptions(paysRes);
                 setCategorieOptions(categorieRes);
@@ -246,7 +246,7 @@ export default function AddActivityModal({ userId, onClose, onSuccess }) {
         setIsLoading(true);
         try {
             const response = await fetch(
-                `http://jobhubs.212.56.40.133.sslip.io/users/${userId}/activities`,
+                `https://api-msa.mydigifinance.com/users/${userId}/activities`,
                 {
                     method: "POST",
                     headers: {

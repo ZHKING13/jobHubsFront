@@ -47,7 +47,7 @@ const CategorieFormModal = ({ onClose, onSuccess }) => {
         setLoading(true);
         try {
             const res = await fetch(
-                "http://jobhubs.212.56.40.133.sslip.io/categorie",
+                "https://api-msa.mydigifinance.com/categorie",
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },

@@ -51,8 +51,7 @@ const PaysFormModal = ({ onClose, onSuccess }) => {
         if (!form.code.trim()) {
             newErrors.code = "Le code pays est requis.";
         } else if (!/^[1-9]{1,3}$/.test(form.code.trim())) {
-            newErrors.code =
-                "Le code doit contenir 1 ou 3 lettres caractere ";
+            newErrors.code = "Le code doit contenir 1 ou 3 lettres caractere ";
         }
 
         // Validation du flag (optionnel mais si présent, doit être une URL ou emoji)
@@ -93,14 +92,11 @@ const PaysFormModal = ({ onClose, onSuccess }) => {
                 ...(form.flag.trim() && { flag: form.flag.trim() }),
             };
 
-            const res = await fetch(
-                "http://jobhubs.212.56.40.133.sslip.io/pays",
-                {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(payload),
-                }
-            );
+            const res = await fetch("https://api-msa.mydigifinance.com/pays", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
 
             if (!res.ok) {
                 const errorData = await res.json().catch(() => ({}));
@@ -127,8 +123,6 @@ const PaysFormModal = ({ onClose, onSuccess }) => {
             onClose();
         }
     };
-
-
 
     return (
         <div
@@ -272,7 +266,6 @@ const PaysFormModal = ({ onClose, onSuccess }) => {
                                     </p>
                                 </div>
                             )}
-                          
                         </div>
 
                         {/* Drapeau */}

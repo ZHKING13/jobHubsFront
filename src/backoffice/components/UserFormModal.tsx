@@ -6,7 +6,6 @@ type UserFormModalProps = {
     onSuccess: () => void;
 };
 
-
 const UserFormModal: React.FC<UserFormModalProps> = ({
     onClose,
     onSuccess,
@@ -34,24 +33,23 @@ const UserFormModal: React.FC<UserFormModalProps> = ({
         setForm((prev) => ({ ...prev, [name]: newValue }));
     };
     type Pays = {
-    id: number;
-    nom: string;
-    code: string;
-    flag: string;
-    createdAt: string;
-    updatedAt: string;
-};
-  useEffect(() => {
+        id: number;
+        nom: string;
+        code: string;
+        flag: string;
+        createdAt: string;
+        updatedAt: string;
+    };
+    useEffect(() => {
         const fetchData = async () => {
             try {
                 const [paysRes] = await Promise.all([
-                    axios.get("http://jobhubs.212.56.40.133.sslip.io/pays"),
-                   
+                    axios.get("https://api-msa.mydigifinance.com/pays"),
                 ]);
                 setPaysOptions(paysRes.data);
             } catch (error) {
                 console.error("Erreur lors du chargement des données:", error);
-            } 
+            }
         };
 
         fetchData();
@@ -83,7 +81,7 @@ const UserFormModal: React.FC<UserFormModalProps> = ({
         setLoading(true);
         try {
             const res = await fetch(
-                "http://jobhubs.212.56.40.133.sslip.io/auth/signup",
+                "https://api-msa.mydigifinance.com/auth/signup",
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -152,13 +150,11 @@ const UserFormModal: React.FC<UserFormModalProps> = ({
                     >
                         <option value={1}>Côte d'Ivoire</option>
                         <option value={2}>Cameroun</option>
-                        {
-                            paysOptions.map((pays) => (
-                                <option key={pays.id} value={pays.id}>
-                                    {pays.nom}
-                                </option>
-                            ))
-                        }
+                        {paysOptions.map((pays) => (
+                            <option key={pays.id} value={pays.id}>
+                                {pays.nom}
+                            </option>
+                        ))}
                     </select>
                     <select
                         name="role"
