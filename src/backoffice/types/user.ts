@@ -6,6 +6,15 @@ type Pays = {
     createdAt: string;
     updatedAt: string;
 };
+type Cellule = {
+    id: number;
+    name: string;
+    contactPhone: string;
+    locationDesc: string;
+    startTime: string;
+    createdAt: string;
+    updatedAt: string;
+};
 
 type User = {
     id: number;
@@ -18,4 +27,4 @@ type User = {
     updatedAt: string;
     pays: Pays;
 };
- export type { User, Pays };
+ export type { User, Pays, Cellule };

@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { Cellule } from "../types/user";
 
 type UserFormModalProps = {
     onClose: () => void;
@@ -15,20 +16,24 @@ const UserFormModal: React.FC<UserFormModalProps> = ({
         prenom: "",
         email: "",
         password: "",
+        phoneNumber: "",
         paysId: 2,
+        celluleId: 1,
         role: "USER",
     });
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [paysOptions, setPaysOptions] = useState<Pays[]>([]);
+    const [celluleOptions, setCelluleOptions] = useState<Cellule[]>([]);
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
     ) => {
         const { name, value } = e.target;
 
-        // Convertir paysId en number
-        const newValue = name === "paysId" ? parseInt(value, 10) : value;
+        // Convertir paysId ou celluleId en number
+        const newValue = name === "paysId" || name === "celluleId"  ? parseInt(value, 10) : value;
+
 
         setForm((prev) => ({ ...prev, [name]: newValue }));
     };
@@ -43,10 +48,12 @@ const UserFormModal: React.FC<UserFormModalProps> = ({
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [paysRes] = await Promise.all([
+                const [paysRes, cellules] = await Promise.all([
                     axios.get("https://api-msa.mydigifinance.com/pays"),
+                    axios.get("https://api-msa.mydigifinance.com/cellules/all"),
                 ]);
                 setPaysOptions(paysRes.data);
+                setCelluleOptions(cellules.data.data);
             } catch (error) {
                 console.error("Erreur lors du chargement des données:", error);
             }
@@ -54,6 +61,10 @@ const UserFormModal: React.FC<UserFormModalProps> = ({
 
         fetchData();
     }, []);
+    if (!paysOptions.length || !celluleOptions.length) {
+        return <div>Chargement...</div>;
+    }
+
     const isValidEmail = (email: string) =>
         /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
@@ -65,6 +76,8 @@ const UserFormModal: React.FC<UserFormModalProps> = ({
         if (!form.password || form.password.length < 6)
             return "Le mot de passe doit faire au moins 6 caractères.";
         if (isNaN(form.paysId)) return "Le pays est invalide.";
+        if (isNaN(form.celluleId)) return "La cellule est invalide.";
+        if (!form.phoneNumber.trim()) return "Le numéro de téléphone est requis.";
         return null;
     };
 
@@ -134,6 +147,14 @@ const UserFormModal: React.FC<UserFormModalProps> = ({
                         className="w-full border p-2 rounded"
                     />
                     <input
+                        name="phoneNumber"
+                        placeholder="Numéro de téléphone"
+                        value={form.phoneNumber}
+                        onChange={handleChange}
+                        required
+                        className="w-full border p-2 rounded"
+                    />
+                    <input
                         type="password"
                         name="password"
                         placeholder="Mot de passe"
@@ -153,6 +174,18 @@ const UserFormModal: React.FC<UserFormModalProps> = ({
                         {paysOptions.map((pays) => (
                             <option key={pays.id} value={pays.id}>
                                 {pays.nom}
+                            </option>
+                        ))}
+                    </select>
+                    <select
+                        name="celluleId"
+                        value={form.celluleId}
+                        onChange={handleChange}
+                        className="w-full border p-2 rounded"
+                    >
+                        {celluleOptions?.map((cellule) => (
+                            <option key={cellule.id} value={cellule.id}>
+                                {cellule.name}
                             </option>
                         ))}
                     </select>
