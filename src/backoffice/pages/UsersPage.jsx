@@ -1,28 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import UserList from "../components/UserListe";
 import UserFormModal from "../components/UserFormModal";
+import { useUsers } from "../hooks/useUsers";
 
 const UsersPage = () => {
-    const [users, setUsers] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
     const [showModal, setShowModal] = useState(false);
-    const fetchUsers = async () => {
-        try {
-            const res = await fetch("https://api-msa.mydigifinance.com/users");
-            if (!res.ok)
-                throw new Error("Erreur lors du chargement des utilisateurs");
-            const data = await res.json();
-            setUsers(data.reverse());
-        } catch (err) {
-            setError("Échec du chargement des utilisateurs");
-        } finally {
-            setLoading(false);
-        }
-    };
-    useEffect(() => {
-        fetchUsers();
-    }, []);
+    const {
+        users,
+        loading,
+        error,
+        refetch,
+        updateUser,
+        deleteUser,
+        createUser,
+    } = useUsers();
 
     return (
         <div className="p-4">
@@ -43,13 +34,18 @@ const UsersPage = () => {
             {!loading && !error && (
                 <UserList
                     users={users}
+                    onUpdate={updateUser}
+                    onDelete={deleteUser}
                     onView={(id) => console.log("Voir user", id)}
                 />
             )}
             {showModal && (
                 <UserFormModal
                     onClose={() => setShowModal(false)}
-                    onSuccess={fetchUsers}
+                    onSuccess={() => {
+                        setShowModal(false);
+                        refetch();
+                    }}
                 />
             )}
         </div>

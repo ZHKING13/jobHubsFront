@@ -46,7 +46,6 @@ export default function ActivityDetailModal({ activity, onClose, onUpdate }) {
             alert("Erreur lors de l'ajout de la photo");
         } finally {
             setAddingPhoto(false);
-            window.location.reload(); // Recharger la page pour afficher les nouvelles photos
         }
     };
     const handleImagesChange = (urls) => {
@@ -93,7 +92,6 @@ export default function ActivityDetailModal({ activity, onClose, onUpdate }) {
             alert("Erreur lors de l'ajout de l'expertise");
         } finally {
             setAddingExpertise(false);
-            window.location.reload();
         }
     };
 

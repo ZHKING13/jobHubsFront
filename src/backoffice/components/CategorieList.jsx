@@ -40,29 +40,9 @@ function CategorieList({ categorie, onCategorieUpdate, onCategorieDelete }) {
         setError("");
 
         try {
-            const response = await fetch(
-                `https://api-msa.mydigifinance.com/categorie/${selectedCategorie.id}`,
-                {
-                    method: "PATCH",
-                    headers: {
-                        accept: "*/*",
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        nom: editedNom.trim(),
-                    }),
-                }
-            );
-
-            if (!response.ok) {
-                throw new Error(
-                    `Erreur ${response.status}: ${response.statusText}`
-                );
-            }
-
-            const updatedCategorie = await response.json();
-
-            window.location.reload(); // Recharger la page pour mettre à jour la liste
+            await onCategorieUpdate(selectedCategorie.id, {
+                nom: editedNom.trim(),
+            });
 
             closeModals();
         } catch (err) {
@@ -79,27 +59,7 @@ function CategorieList({ categorie, onCategorieUpdate, onCategorieDelete }) {
         setError("");
 
         try {
-            const response = await fetch(
-                `https://api-msa.mydigifinance.com/categorie/${selectedCategorie.id}`,
-                {
-                    method: "DELETE",
-                    headers: {
-                        accept: "*/*",
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        nom: editedNom.trim(),
-                    }),
-                }
-            );
-
-            if (!response.ok) {
-                throw new Error(
-                    `Erreur ${response.status}: ${response.statusText}`
-                );
-            }
-
-            window.location.reload(); // Recharger la page pour mettre à jour la liste
+            await onCategorieDelete(selectedCategorie.id);
 
             closeModals();
         } catch (err) {

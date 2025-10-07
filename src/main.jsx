@@ -9,6 +9,8 @@ import UserProfil from "./backoffice/pages/UserProfil.jsx";
 import CategoriePage from "./backoffice/pages/CategoriePage.jsx";
 import PagePays from "./backoffice/pages/PagePays.jsx";
 import ActivitePage from "./backoffice/pages/ActivitePage.jsx";
+import CellulePage from "./backoffice/pages/CellulePage.jsx";
+import LoginForm from "./backoffice/pages/LoginForm.jsx";
 
 const router = createBrowserRouter([
     {
@@ -38,6 +40,14 @@ const router = createBrowserRouter([
             {
                 path: "activites",
                 element: <ActivitePage />,
+            },
+            {
+                path: "cellules",
+                element: <CellulePage />,
+            },
+            {
+                path: "login",
+                element: <LoginForm />,
             },
         ],
     },

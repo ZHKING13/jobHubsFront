@@ -1,58 +1,34 @@
 import React, { useState, useEffect } from "react";
-import {
-    X,
-    User,
-    Mail,
-    Phone,
-    Lock,
-    Globe,
-    MapPin,
-    Shield,
-} from "lucide-react";
-import { Cellule, Pays } from "../types/user";
-import { useUsers } from "../hooks/useUsers";
+import { X, User, Mail, Phone, Globe, MapPin, Shield } from "lucide-react";
+import { User as UserType } from "../types/user";
 import { usePays } from "../hooks/usePays";
 import { useCellules } from "../hooks/useCellules";
 
-type UserFormModalProps = {
+type EditUserModalProps = {
+    user: UserType;
     onClose: () => void;
-    onSuccess: () => void;
+    onSave: (data: any) => void;
 };
 
-const UserFormModal: React.FC<UserFormModalProps> = ({
+const EditUserModal: React.FC<EditUserModalProps> = ({
+    user,
     onClose,
-    onSuccess,
+    onSave,
 }) => {
-    const { createUser } = useUsers();
     const { pays } = usePays();
     const { cellules } = useCellules();
 
     const [formData, setFormData] = useState({
-        nom: "",
-        prenom: "",
-        email: "",
-        password: "",
-        phoneNumber: "",
-        paysId: pays.length > 0 ? (pays[0] as any)?.id : 1,
-        celluleId: cellules.length > 0 ? (cellules[0] as any)?.id : 1,
-        role: "USER",
+        nom: user.nom || "",
+        prenom: user.prenom || "",
+        email: user.email || "",
+        phoneNumber: user.phoneNumber || "",
+        paysId: user.paysId || 1,
+        celluleId: user.celluleId || 1,
+        role: user.role || "USER",
     });
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
-
-    // Initialiser les valeurs par défaut quand les données sont chargées
-    useEffect(() => {
-        if (pays.length > 0 && cellules.length > 0) {
-            setFormData((prev) => ({
-                ...prev,
-                paysId: prev.paysId === 1 ? (pays[0] as any)?.id : prev.paysId,
-                celluleId:
-                    prev.celluleId === 1
-                        ? (cellules[0] as any)?.id
-                        : prev.celluleId,
-            }));
-        }
-    }, [pays, cellules]);
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -75,10 +51,6 @@ const UserFormModal: React.FC<UserFormModalProps> = ({
         if (!formData.prenom.trim()) return "Le prénom est requis.";
         if (!formData.email.trim() || !isValidEmail(formData.email))
             return "Un email valide est requis.";
-        if (!formData.password || formData.password.length < 6)
-            return "Le mot de passe doit faire au moins 6 caractères.";
-        if (isNaN(formData.paysId)) return "Le pays est invalide.";
-        if (isNaN(formData.celluleId)) return "La cellule est invalide.";
         if (!formData.phoneNumber.trim())
             return "Le numéro de téléphone est requis.";
         return null;
@@ -96,22 +68,12 @@ const UserFormModal: React.FC<UserFormModalProps> = ({
 
         setIsLoading(true);
         try {
-            await createUser(formData);
+            await onSave(formData);
             onClose();
-            setFormData({
-                nom: "",
-                prenom: "",
-                email: "",
-                password: "",
-                paysId: 1,
-                celluleId: 1,
-                phoneNumber: "",
-                role: "USER",
-            });
         } catch (err: any) {
             setError(
                 err.response?.data?.message ||
-                    "Erreur lors de la création de l'utilisateur"
+                    "Erreur lors de la modification de l'utilisateur"
             );
         } finally {
             setIsLoading(false);
@@ -124,7 +86,7 @@ const UserFormModal: React.FC<UserFormModalProps> = ({
                 <div className="flex items-center justify-between p-6 border-b border-gray-200">
                     <h3 className="text-lg font-semibold text-gray-900 flex items-center">
                         <User className="w-5 h-5 mr-2 text-blue-600" />
-                        Créer un utilisateur
+                        Modifier l'utilisateur
                     </h3>
                     <button
                         onClick={onClose}
@@ -204,21 +166,6 @@ const UserFormModal: React.FC<UserFormModalProps> = ({
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             />
                         </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                <Lock className="w-4 h-4 inline mr-1" />
-                                Mot de passe
-                            </label>
-                            <input
-                                name="password"
-                                type="password"
-                                value={formData.password}
-                                onChange={handleChange}
-                                required
-                                placeholder="Minimum 6 caractères"
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            />
-                        </div>
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -236,7 +183,7 @@ const UserFormModal: React.FC<UserFormModalProps> = ({
                                 {pays &&
                                     pays.map((p: any) => (
                                         <option key={p.id} value={p.id}>
-                                            {p.nom}
+                                            {p.flag} {p.nom}
                                         </option>
                                     ))}
                             </select>
@@ -288,12 +235,6 @@ const UserFormModal: React.FC<UserFormModalProps> = ({
                             </select>
                         </div>
 
-                        {error && (
-                            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
-                                {error}
-                            </div>
-                        )}
-
                         <div className="flex justify-end gap-3 pt-4">
                             <button
                                 type="button"
@@ -308,8 +249,8 @@ const UserFormModal: React.FC<UserFormModalProps> = ({
                                 className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {isLoading
-                                    ? "Création..."
-                                    : "Créer l'utilisateur"}
+                                    ? "Modification..."
+                                    : "Modifier l'utilisateur"}
                             </button>
                         </div>
                     </form>
@@ -319,4 +260,4 @@ const UserFormModal: React.FC<UserFormModalProps> = ({
     );
 };
 
-export default UserFormModal;
+export default EditUserModal;

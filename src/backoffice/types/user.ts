@@ -9,9 +9,12 @@ type Pays = {
 type Cellule = {
     id: number;
     name: string;
-    contactPhone: string;
+    leaderPersonId: number;
     locationDesc: string;
+    locationLink: string;
     startTime: string;
+    contactPhone: string;
+    isActive: boolean;
     createdAt: string;
     updatedAt: string;
 };
@@ -22,9 +25,11 @@ type User = {
     prenom: string;
     role: string;
     email: string;
+    phoneNumber?: string;
     paysId: number;
+    celluleId?: number;
     createdAt: string;
     updatedAt: string;
     pays: Pays;
 };
- export type { User, Pays, Cellule };
+export type { User, Pays, Cellule };

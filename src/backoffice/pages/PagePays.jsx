@@ -1,32 +1,20 @@
-import React, { useEffect, useState } from "react";
-import UserList from "../components/UserListe";
-import UserFormModal from "../components/UserFormModal";
+import React, { useState } from "react";
 import { Plus } from "lucide-react";
-import CategorieList from "../components/CategorieList";
-import CategorieFormModal from "../components/CategorieFormModal";
+import PaysList from "../components/PaysList";
 import PaysFormModal from "../components/PaysFormModal";
+import { usePays } from "../hooks/usePays";
 
 const PagePays = () => {
-    const [pays, setPays] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
     const [showModal, setShowModal] = useState(false);
-    const fetchPays = async () => {
-        try {
-            const res = await fetch("https://api-msa.mydigifinance.com/pays");
-            if (!res.ok)
-                throw new Error("Erreur lors du chargement des catégories");
-            const data = await res.json();
-            setPays(data.reverse());
-        } catch (err) {
-            setError("Échec du chargement des catégories");
-        } finally {
-            setLoading(false);
-        }
-    };
-    useEffect(() => {
-        fetchPays();
-    }, []);
+    const {
+        pays,
+        loading,
+        error,
+        refetch,
+        updatePays,
+        deletePays,
+        createPays,
+    } = usePays();
 
     return (
         <div className="p-4">
@@ -44,11 +32,20 @@ const PagePays = () => {
             {loading && <p className="text-blue-600">Chargement...</p>}
             {error && <p className="text-red-500">{error}</p>}
 
-            {!loading && !error && <CategorieList categorie={pays} />}
+            {!loading && !error && (
+                <PaysList
+                    pays={pays}
+                    onUpdate={updatePays}
+                    onDelete={deletePays}
+                />
+            )}
             {showModal && (
                 <PaysFormModal
                     onClose={() => setShowModal(false)}
-                    onSuccess={fetchPays}
+                    onSuccess={() => {
+                        setShowModal(false);
+                        refetch();
+                    }}
                 />
             )}
         </div>

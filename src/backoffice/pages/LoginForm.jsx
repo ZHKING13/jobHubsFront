@@ -3,21 +3,24 @@ import {
     Eye,
     EyeOff,
     Lock,
-    User,
+    Mail,
     Loader2,
     Shield,
     AlertCircle,
     CheckCircle,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
-const USER = { username: "admin", password: "azerty123@" };
-const LoginForm = () => {
-    const [form, setForm] = useState({ username: "", password: "" });
+const LoginForm = ({ onLogin }) => {
+    const [form, setForm] = useState({ email: "", password: "" });
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
+
+    const { login } = useAuth();
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -26,11 +29,14 @@ const LoginForm = () => {
         // Effacer l'erreur lors de la saisie
         if (error) setError("");
     };
-const navigate = useNavigate();
 
     const validateForm = () => {
-        if (!form.username.trim()) {
-            setError("Le nom d'utilisateur est requis");
+        if (!form.email.trim()) {
+            setError("L'adresse email est requise");
+            return false;
+        }
+        if (!form.email.includes("@")) {
+            setError("Veuillez entrer une adresse email valide");
             return false;
         }
         if (!form.password) {
@@ -48,31 +54,23 @@ const navigate = useNavigate();
         setLoading(true);
         setError("");
 
-        // Simulation d'un délai d'API
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        try {
+            const result = await login(form.email, form.password);
 
-        if (
-            form.username === USER.username &&
-            form.password === USER.password
-        ) {
-            const authData = {
-                isAuthenticated: true,
-                user: { username: form.username },
-                timestamp: Date.now(),
-            };
+            if (result.success) {
+                // Notifier le composant parent de la connexion réussie
+                if (onLogin) {
+                    onLogin(true);
+                }
 
-           localStorage.setItem("jobhubs_auth", JSON.stringify(authData));
-
-          //reload the page to apply the authentication
-            window.location.reload();
-
-            // Rediriger vers la page principale
-            navigate("/users");
-        } else {
-            setError("Nom d'utilisateur ou mot de passe incorrect");
+                // Rediriger vers la page principale
+                navigate("/users");
+            }
+        } catch (err) {
+            setError(err.message || "Erreur de connexion. Veuillez réessayer.");
+        } finally {
+            setLoading(false);
         }
-
-        setLoading(false);
     };
 
     const handleKeyPress = (e) => {
@@ -115,20 +113,20 @@ const navigate = useNavigate();
 
                 {/* Formulaire */}
                 <form onSubmit={handleLogin} className="space-y-6">
-                    {/* Nom d'utilisateur */}
+                    {/* Email */}
                     <div className="space-y-2">
                         <label className="text-sm font-medium text-indigo-200">
-                            Nom d'utilisateur
+                            Adresse email
                         </label>
                         <div className="relative">
-                            <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-indigo-300" />
+                            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-indigo-300" />
                             <input
-                                type="text"
-                                name="username"
-                                value={form.username}
+                                type="email"
+                                name="email"
+                                value={form.email}
                                 onChange={handleChange}
                                 onKeyPress={handleKeyPress}
-                                placeholder="Entrez votre nom d'utilisateur"
+                                placeholder="Entrez votre adresse email"
                                 disabled={loading}
                                 className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 disabled:opacity-50"
                                 autoFocus
@@ -197,7 +195,7 @@ const navigate = useNavigate();
                     <button
                         type="submit"
                         disabled={
-                            loading || !form.username.trim() || !form.password
+                            loading || !form.email.trim() || !form.password
                         }
                         className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-transparent disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
                     >
@@ -214,8 +212,6 @@ const navigate = useNavigate();
                         )}
                     </button>
                 </form>
-
-                
             </div>
         </div>
     );

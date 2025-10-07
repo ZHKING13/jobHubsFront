@@ -9,6 +9,7 @@ import {
 } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
 const user = {
     name: "Tom Cook",
@@ -22,12 +23,10 @@ const navigation = [
     { name: "Activites", href: "/activites" },
     { name: "Catégorie", href: "/categorie" },
     { name: "Pays", href: "/pays" },
+    { name: "Cellules", href: "/cellules" },
 ];
 
-const userNavigation = [
-   
-    { name: "Deconexion", href: "#" },
-];
+const userNavigation = [{ name: "Deconexion", href: "#" }];
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
@@ -35,6 +34,7 @@ function classNames(...classes) {
 
 function Header() {
     const location = useLocation();
+    const { user, logout } = useAuth();
 
     // Fonction pour vérifier si un lien est actif
     const isActivePath = (href) => {
@@ -44,6 +44,11 @@ function Header() {
         }
         // Pour les autres pages, vérifier si le chemin commence par le href
         return location.pathname.startsWith(href);
+    };
+
+    const handleLogout = () => {
+        logout();
+        // La déconnexion va automatiquement rediriger vers la page de login grâce à useAuth
     };
 
     return (
@@ -126,7 +131,7 @@ function Header() {
                                     </span>
                                     <img
                                         alt=""
-                                        src={user.imageUrl}
+                                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                                         className="size-8 rounded-full ring-2 ring-transparent hover:ring-indigo-500 transition-all duration-200"
                                     />
                                     <div className="absolute -bottom-1 -right-1 block h-3 w-3 rounded-full bg-green-500 ring-2 ring-gray-800">
@@ -143,10 +148,13 @@ function Header() {
                                     {/* User Info */}
                                     <div className="px-4 py-3 border-b border-gray-100">
                                         <p className="text-sm font-medium text-gray-900">
-                                            {user.name}
+                                            {user?.nom} {user?.prenom}
                                         </p>
                                         <p className="text-sm text-gray-500">
-                                            {user.email}
+                                            {user?.email}
+                                        </p>
+                                        <p className="text-xs text-gray-400">
+                                            {user?.role}
                                         </p>
                                     </div>
 
@@ -154,12 +162,7 @@ function Header() {
                                         <MenuItem key={item.name}>
                                             {item.href === "#" ? (
                                                 <button
-                                                    onClick={() => {
-                                                        // Logique de déconnexion
-                                                        console.log(
-                                                            "Déconnexion"
-                                                        );
-                                                    }}
+                                                    onClick={handleLogout}
                                                     className="block w-full text-left px-4 py-2 text-sm text-gray-700 data-focus:bg-indigo-50 data-focus:text-indigo-900 data-focus:outline-hidden transition-colors duration-200"
                                                 >
                                                     {item.name}
@@ -233,17 +236,17 @@ function Header() {
                         <div className="shrink-0 relative">
                             <img
                                 alt=""
-                                src={user.imageUrl}
+                                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                                 className="size-10 rounded-full ring-2 ring-indigo-500"
                             />
                             <div className="absolute -bottom-1 -right-1 block h-3 w-3 rounded-full bg-green-500 ring-2 ring-gray-900"></div>
                         </div>
                         <div className="ml-3">
                             <div className="text-base/5 font-medium text-white">
-                                {user.name}
+                                {user?.name}
                             </div>
                             <div className="text-sm font-medium text-gray-400">
-                                {user.email}
+                                {user?.email}
                             </div>
                         </div>
                         <button
@@ -265,9 +268,7 @@ function Header() {
                                 as={item.href === "#" ? "button" : Link}
                                 to={item.href !== "#" ? item.href : undefined}
                                 onClick={
-                                    item.href === "#"
-                                        ? () => console.log("Déconnexion")
-                                        : undefined
+                                    item.href === "#" ? handleLogout : undefined
                                 }
                                 className="block w-full text-left rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white transition-colors duration-200"
                             >
