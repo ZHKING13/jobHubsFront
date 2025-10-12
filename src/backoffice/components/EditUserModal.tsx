@@ -23,7 +23,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
         prenom: user.prenom || "",
         email: user.email || "",
         phoneNumber: user.phoneNumber || "",
-        paysId: user.paysId || 1,
+        paysId: user.paysId || 0,
         celluleId: user.celluleId || 1,
         role: user.role || "USER",
     });
