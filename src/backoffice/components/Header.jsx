@@ -48,7 +48,7 @@ function Header() {
 
     const handleLogout = () => {
         logout();
-        // La déconnexion va automatiquement rediriger vers la page de login grâce à useAuth
+        window.location.href = "/login";
     };
 
     return (

@@ -41,6 +41,7 @@ function CelluleFormModal({ onClose, onSuccess }) {
         setSearchTerm(`${user.nom} ${user.prenom} (${user.email})`);
         setIsDropdownOpen(false);
     };
+console.log(user);
 
     const handleSubmit = async (e) => {
         e.preventDefault();

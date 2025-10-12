@@ -17,7 +17,7 @@ export function useAuth() {
             const storedAuth = localStorage.getItem("jobhubs_auth");
             if (storedAuth) {
                 const authData = JSON.parse(storedAuth);
-                setUser(authData);
+                setUser(authData?.user);
                 setIsAuthenticated(true);
             }
         } catch (error) {
