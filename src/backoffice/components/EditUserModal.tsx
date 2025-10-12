@@ -48,11 +48,9 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
 
     const validateForm = () => {
         if (!formData.nom.trim()) return "Le nom est requis.";
-        if (!formData.prenom.trim()) return "Le prénom est requis.";
         if (!formData.email.trim() || !isValidEmail(formData.email))
             return "Un email valide est requis.";
-        if (!formData.phoneNumber.trim())
-            return "Le numéro de téléphone est requis.";
+
         return null;
     };
 
@@ -66,9 +64,40 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
             return;
         }
 
+        // Filtrer les données pour supprimer les valeurs vides ou null
+        const dataToSend = Object.entries(formData).reduce(
+            (acc, [key, value]) => {
+                // Garder les valeurs qui ne sont pas vides, null, undefined ou des chaînes vides
+                if (
+                    value !== null &&
+                    value !== undefined &&
+                    value !== "" &&
+                    value !== 0
+                ) {
+                    acc[key] = value;
+                }
+                return acc;
+            },
+            {} as any
+        );
+
+        // S'assurer que les champs obligatoires sont présents même s'ils sont 0
+        if (formData.paysId !== null && formData.paysId !== undefined) {
+            dataToSend.paysId = formData.paysId;
+        }
+        if (
+            formData.celluleId !== null &&
+            formData.celluleId !== undefined &&
+            formData.celluleId !== 0
+        ) {
+            dataToSend.celluleId = formData.celluleId;
+        }
+
+        console.log("Données de modification envoyées:", dataToSend); // Pour debug
+
         setIsLoading(true);
         try {
-            await onSave(formData);
+            await onSave(dataToSend);
             onClose();
         } catch (err: any) {
             setError(
@@ -129,7 +158,6 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
                                 type="text"
                                 value={formData.prenom}
                                 onChange={handleChange}
-                                required
                                 placeholder="Entrez le prénom"
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             />
@@ -161,7 +189,6 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
                                 type="tel"
                                 value={formData.phoneNumber}
                                 onChange={handleChange}
-                                required
                                 placeholder="+225 XX XX XX XX"
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             />
@@ -176,14 +203,13 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
                                 name="paysId"
                                 value={formData.paysId}
                                 onChange={handleChange}
-                                required
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
                             >
                                 <option value="">Choisir un pays...</option>
                                 {pays &&
                                     pays.map((p: any) => (
                                         <option key={p.id} value={p.id}>
-                                             {p.nom}
+                                            {p.nom}
                                         </option>
                                     ))}
                             </select>
