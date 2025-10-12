@@ -74,8 +74,7 @@ const UserFormModal: React.FC<UserFormModalProps> = ({
         if (!formData.nom.trim()) return "Le nom est requis.";
         if (!formData.email.trim() || !isValidEmail(formData.email))
             return "Un email valide est requis.";
-        if (!formData.password || formData.password.length < 6)
-            return "Le mot de passe doit faire au moins 6 caractères.";
+      
         if (isNaN(formData.paysId)) return "Le pays est invalide.";
 
         return null;
@@ -241,7 +240,7 @@ const UserFormModal: React.FC<UserFormModalProps> = ({
                                 type="password"
                                 value={formData.password}
                                 onChange={handleChange}
-                                required
+                                
                                 placeholder="Minimum 6 caractères"
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             />
