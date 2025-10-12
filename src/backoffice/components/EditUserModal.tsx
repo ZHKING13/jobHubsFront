@@ -23,8 +23,8 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
         prenom: user.prenom || "",
         email: user.email || "",
         phoneNumber: user.phoneNumber || "",
-        paysId: user.paysId || 0,
-        celluleId: user.celluleId || 1,
+        paysId: user.paysId || 1,
+        celluleId: user.celluleId || 0,
         role: user.role || "USER",
     });
     const [isLoading, setIsLoading] = useState(false);
