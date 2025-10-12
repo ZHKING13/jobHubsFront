@@ -34,7 +34,7 @@ function CelluleList({ cellules, onUpdate, onDelete }) {
         const searchLower = searchTerm.toLowerCase();
         return (
             user.nom.toLowerCase().includes(searchLower) ||
-            user.prenom.toLowerCase().includes(searchLower) ||
+            user?.prenom?.toLowerCase().includes(searchLower) ||
             user.email.toLowerCase().includes(searchLower)
         );
     });
@@ -64,10 +64,10 @@ function CelluleList({ cellules, onUpdate, onDelete }) {
         setEditedCellule({
             name: cellule.name,
             leaderPersonId: cellule.leaderPersonId,
-            locationDesc: cellule.locationDesc,
+            locationDesc: cellule.locationDesc  || "", 
             locationLink: cellule.locationLink || "",
-            startTime: cellule.startTime,
-            contactPhone: cellule.contactPhone,
+            startTime: cellule.startTime || "",
+            contactPhone: cellule.contactPhone || "",
             isActive: cellule.isActive,
         });
 
