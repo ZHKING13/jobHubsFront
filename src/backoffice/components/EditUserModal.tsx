@@ -183,7 +183,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
                                 {pays &&
                                     pays.map((p: any) => (
                                         <option key={p.id} value={p.id}>
-                                            {p.flag} {p.nom}
+                                             {p.nom}
                                         </option>
                                     ))}
                             </select>
