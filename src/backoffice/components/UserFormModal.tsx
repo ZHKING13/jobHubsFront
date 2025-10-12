@@ -72,15 +72,12 @@ const UserFormModal: React.FC<UserFormModalProps> = ({
 
     const validateForm = () => {
         if (!formData.nom.trim()) return "Le nom est requis.";
-        if (!formData.prenom.trim()) return "Le prénom est requis.";
         if (!formData.email.trim() || !isValidEmail(formData.email))
             return "Un email valide est requis.";
         if (!formData.password || formData.password.length < 6)
             return "Le mot de passe doit faire au moins 6 caractères.";
         if (isNaN(formData.paysId)) return "Le pays est invalide.";
-        if (isNaN(formData.celluleId)) return "La cellule est invalide.";
-        if (!formData.phoneNumber.trim())
-            return "Le numéro de téléphone est requis.";
+
         return null;
     };
 
@@ -94,16 +91,48 @@ const UserFormModal: React.FC<UserFormModalProps> = ({
             return;
         }
 
+        // Filtrer les données pour supprimer les valeurs vides ou null
+        const dataToSend = Object.entries(formData).reduce(
+            (acc, [key, value]) => {
+                // Garder les valeurs qui ne sont pas vides, null, undefined ou des chaînes vides
+                if (
+                    value !== null &&
+                    value !== undefined &&
+                    value !== "" &&
+                    value !== 0
+                ) {
+                    acc[key] = value;
+                }
+                return acc;
+            },
+            {} as any
+        );
+
+        // S'assurer que les champs obligatoires sont présents même s'ils sont 0
+        if (formData.paysId !== null && formData.paysId !== undefined) {
+            dataToSend.paysId = formData.paysId;
+        }
+        if (
+            formData.celluleId !== null &&
+            formData.celluleId !== undefined &&
+            formData.celluleId !== 0
+        ) {
+            dataToSend.celluleId = formData.celluleId;
+        }
+
+        console.log("Données envoyées:", dataToSend); // Pour debug
+
         setIsLoading(true);
         try {
-            await createUser(formData);
+            await createUser(dataToSend);
             onClose();
+            onSuccess();
             setFormData({
                 nom: "",
                 prenom: "",
                 email: "",
                 password: "",
-                paysId: 1,
+                paysId: pays.length > 0 ? (pays[0] as any)?.id : 1,
                 celluleId: 0,
                 phoneNumber: "",
                 role: "USER",
@@ -167,7 +196,6 @@ const UserFormModal: React.FC<UserFormModalProps> = ({
                                 type="text"
                                 value={formData.prenom}
                                 onChange={handleChange}
-                                required
                                 placeholder="Entrez le prénom"
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             />
@@ -199,7 +227,6 @@ const UserFormModal: React.FC<UserFormModalProps> = ({
                                 type="tel"
                                 value={formData.phoneNumber}
                                 onChange={handleChange}
-                                required
                                 placeholder="+225 XX XX XX XX"
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             />
