@@ -34,7 +34,7 @@ const UserFormModal: React.FC<UserFormModalProps> = ({
         password: "",
         phoneNumber: "",
         paysId: pays.length > 0 ? (pays[0] as any)?.id : 1,
-        celluleId: cellules.length > 0 ? (cellules[0] as any)?.id : 1,
+        celluleId: cellules.length > 0 ? (cellules[0] as any)?.id : 0,
         role: "USER",
     });
     const [isLoading, setIsLoading] = useState(false);
@@ -104,7 +104,7 @@ const UserFormModal: React.FC<UserFormModalProps> = ({
                 email: "",
                 password: "",
                 paysId: 1,
-                celluleId: 1,
+                celluleId: 0,
                 phoneNumber: "",
                 role: "USER",
             });
@@ -251,7 +251,6 @@ const UserFormModal: React.FC<UserFormModalProps> = ({
                                 name="celluleId"
                                 value={formData.celluleId}
                                 onChange={handleChange}
-                                required
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
                             >
                                 <option value="">Choisir une cellule...</option>
