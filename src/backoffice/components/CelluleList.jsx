@@ -569,7 +569,7 @@ function CelluleList({ cellules, onUpdate, onDelete }) {
 
             {/* Modal de suppression */}
             {isDeleteModalOpen && (
-                <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+                <div className="fixed inset-0 bg-black/60 bg-opacity-50 overflow-y-auto h-full w-full z-50">
                     <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
                         <div className="mt-3 text-center">
                             <div className="flex justify-between items-center mb-4">

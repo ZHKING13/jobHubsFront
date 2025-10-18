@@ -26,9 +26,9 @@ function CelluleFormModal({ onClose, onSuccess }) {
     const filteredUsers = users.filter((user) => {
         const searchLower = searchTerm.toLowerCase();
         return (
-            user.nom.toLowerCase().includes(searchLower) ||
-            user.prenom.toLowerCase().includes(searchLower) ||
-            user.email.toLowerCase().includes(searchLower)
+            user?.nom?.toLowerCase().includes(searchLower) ||
+            user?.prenom?.toLowerCase().includes(searchLower) ||
+            user?.email?.toLowerCase().includes(searchLower)
         );
     });
 
