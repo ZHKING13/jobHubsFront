@@ -11,7 +11,7 @@ function ActiviteList({ activities }) {
     // États pour la recherche et pagination
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 7;
+    const itemsPerPage = 20;
 
     // Filtrer les activités selon le terme de recherche
     const filteredActivities = activities.filter(

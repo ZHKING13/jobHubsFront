@@ -36,7 +36,7 @@ function CelluleList({ cellules, onUpdate, onDelete }) {
     // États pour la recherche globale et pagination
     const [globalSearchTerm, setGlobalSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10;
+    const itemsPerPage = 20;
 
     // Filtrer les cellules selon le terme de recherche globale
     const filteredCellules = cellules.filter(

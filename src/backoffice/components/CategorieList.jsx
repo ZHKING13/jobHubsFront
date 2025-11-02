@@ -21,7 +21,7 @@ function CategorieList({ categorie, onCategorieUpdate, onCategorieDelete }) {
     // États pour la recherche et pagination
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10;
+    const itemsPerPage = 20;
 
     // Filtrer les catégories selon le terme de recherche
     const filteredCategories = categorie.filter(
